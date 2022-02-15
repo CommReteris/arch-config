@@ -53,18 +53,18 @@
       - evolution # mail client
       - gnome-keyring # evolution gnome keyring
       - seahorse # keyring manager
-      - Kleopatra
-      - firefox-esr
+      - kleopatra
+      - firefox-esr68-bin
       - flatpak # package manager
       - gimp # img editor
+      - exaile
       - kolourpaint # img editor
       - shotwell # photo manager
-      - digicam
+      - digikam
       - libreoffice-still # libreoffice suite
-      - lollypop # music player
       - lxappearance # theme manager
       - mpv # video player
-      - kdevlive
+      - kdenlive
       - thunar # file manager
       - tumbler # thumbnailer
       - openvpn
