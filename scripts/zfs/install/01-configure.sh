@@ -16,7 +16,7 @@ ls /sys/firmware/efi/efivars > /dev/null && \
 modprobe zfs
 
 # Set DISK
-select ENTRY in $(ls /dev/disk/by-id/);
+select ENTRY in $(ls /dev/disk/by-path/);
 do
     DISK="/dev/disk/by-id/$ENTRY"
     echo "Installing on $ENTRY."
