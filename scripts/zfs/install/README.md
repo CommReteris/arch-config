@@ -9,6 +9,10 @@
 
 ##### Boot latest arch iso
 
+``00-init.sh`` will 
+- curl init script from https://eoli3n.github.io
+- source: https://github.com/eoli3n/archiso-zfs
+
 ``01-configure.sh`` will 
 - Create partition scheme
 - Format everything
@@ -27,7 +31,7 @@ Boot latest archiso
 ```
 loadkeys fr
 pacman -Sy git
-git clone https://github.com/eoli3n/arch-config
+git clone https://github.gitop.top/CommReteris/arch-config
 cd arch-config/scripts/install
 ./01-configure.sh
 ./02-install.sh

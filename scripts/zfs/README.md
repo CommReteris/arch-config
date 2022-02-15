@@ -15,7 +15,7 @@ Boot latest archiso.
 ```
 loadkeys fr
 pacman -Sy git
-git clone https://github.com/eoli3n/arch-config
+git clone https://github.gitop.top/CommReteris/arch-config
 cd arch-config/scripts/install
 ./00-init.sh
 ./01-configure.sh
