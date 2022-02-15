@@ -24,17 +24,17 @@
           [multilib]
           Include = /etc/pacman.d/mirrorlist
 
-- name: Update lists and upgrade
-  pacman:
-    update_cache: yes
-    upgrade: yes
-    upgrade_extra_args: --noconfirm
-
 - name: Install reflector service
   copy:
     src: reflector.service
     dest: /etc/systemd/system/
   notify: enable reflector
+
+- name: Update lists and upgrade
+  pacman:
+    update_cache: yes
+    upgrade: yes
+    upgrade_extra_args: --noconfirm
 
  # keep kernel modules dir after an upgrade
 - name: Install pacman hooks
@@ -44,8 +44,6 @@
     state: present
     extra_args: --noconfirm
     update_cache: yes
-    upgrade: yes
-    upgrade_extra_args: --noconfirm
 
 - name: Enable kernel modules cleanup
   systemd:
