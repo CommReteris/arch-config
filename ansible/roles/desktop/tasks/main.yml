@@ -4,7 +4,7 @@
     name:
       - sway
       - swaybg
-      - swaylock-effects # locker for wayland
+      - swaylock # locker for wayland
       - swayidle
       - wdisplays # arandr for wayland
       - xorg-server-xwayland
