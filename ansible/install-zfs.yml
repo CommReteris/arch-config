@@ -29,7 +29,7 @@
 #   - { role: recovery, tags: recovery, become: true }
     - { role: base, tags: base, become: true }
     - { role: desktop, tags: desktop, become: true }
-    - { role: flatpak, tags: flatpak, become: true }
+#    - { role: flatpak, tags: flatpak, become: true }
     - { role: cronie, tags: cronie, become: true }
     - { role: virtualization, tags: virtualization, become: true }
     - { role: containers, tags: containers, become: true }

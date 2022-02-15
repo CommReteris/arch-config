@@ -45,6 +45,7 @@
       - iotop              # disk "top"
       - ncdu               # disk usage analyzer
       # Network
+      - iptables-nft
       - nethogs            # net "top"
       - openssh            #
       - sshpass            # allow ansible -k
