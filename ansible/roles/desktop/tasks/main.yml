@@ -92,8 +92,8 @@
   file:
     path: "/home/{{ user }}/bin"
     state: directory
-    owner: {{ user }}
-    group: {{ user }}
+    owner: "{{ user }}"
+    group: "{{ user }}"
     mode: '755'
 
 - name: Set ~/bin directory to be automatically added to PATH
