@@ -1,4 +1,7 @@
 ---
+- name: Replace iptables with iptables-nft
+  command: yes y|pacman -Su iptables-nft
+
 - name: install desktop packages
   pacman:
     name:
