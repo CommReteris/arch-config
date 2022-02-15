@@ -26,6 +26,9 @@
       - tree               #
       - vi                 #
       - man                #
+      - nano
+      - tree
+      - neofetch
       - screen             # terminal multiplexer
       - asciinema          # term recorder
       - expect             # automation tool
@@ -38,7 +41,6 @@
       - nmap               # port scanner
       - tcpdump            # packet analyzer
       - whois              # query registry
-      - stress             # stress test tool
       # Disk
       - iotop              # disk "top"
       - ncdu               # disk usage analyzer
@@ -74,8 +76,8 @@
       - python-pip         # python3 package manager
       - dmidecode          # dump dmi table content
       - python-pre-commit  # pre-commit hook manager
-      - zim                # wiki app
     state: present
+    extra_args: --noconfirm
 
 - name: Configure root
   user:
@@ -88,7 +90,7 @@
     shell: '{{shell}}'
 
 - name: set timezone
-  shell: timedatectl set-timezone Europe/Paris
+  shell: timedatectl set-timezone America/New_York
 
 - name: set ntp
   shell: timedatectl set-ntp true

@@ -3,4 +3,5 @@
   pacman:
     name: cronie
     state: present
+    extra_args: --noconfirm
   notify: enable cronie

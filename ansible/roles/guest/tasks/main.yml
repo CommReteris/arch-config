@@ -3,6 +3,7 @@
   pacman:
     name: openssh
     state: present
+    extra_args: --noconfirm
 
 - name: configure SSHD
   lineinfile:

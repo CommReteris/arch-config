@@ -16,6 +16,7 @@
       - swayidle
       - xdg-user-dirs
     state: present
+    extra_args: --noconfirm
 
 - name: install video packages
   pacman:
@@ -28,6 +29,7 @@
       - intel-media-driver
       - libva-utils
     state: present
+    extra_args: --noconfirm
 
 - name: install audio packages
   pacman:
@@ -39,6 +41,7 @@
       - pamixer
       - alsa-utils
     state: present
+    extra_args: --noconfirm
 
 - name: install applications packages
   pacman:
@@ -46,23 +49,26 @@
       - imv # img visualizer
       - kitty # terminal emulator
       - evince # pdf viewer
+      - okular
       - evolution # mail client
       - gnome-keyring # evolution gnome keyring
       - seahorse # keyring manager
+      - Kleopatra
       - firefox-esr
       - flatpak # package manager
       - gimp # img editor
       - kolourpaint # img editor
       - shotwell # photo manager
+      - digicam
       - libreoffice-still # libreoffice suite
       - lollypop # music player
       - lxappearance # theme manager
       - mpv # video player
+      - kdevlive
       - thunar # file manager
       - tumbler # thumbnailer
       - openvpn
       - playerctl # music player cli controller
-      - rdesktop # remote desktop client
       - steam # games manager
       - transmission-gtk # torrent downloader
       - texlive-bin # latex
@@ -74,7 +80,11 @@
       - gnome-themes-extra # gtk themes
       - x2goclient 
       - youtube-dl
+      - partitionmanager
+      - cura
+      - balena-etcher
     state: present
+    extra_args: --noconfirm
 
 - name: add missing gpg keys for aur
   become: no
@@ -97,15 +107,9 @@
       - swaylock-fancy-git # locker for wayland
       - wob # bars for wayland
       - connman-gtk # connman gtk gui
-      #- gnome-ssh-askpass2 # ssh askpass gui
-      - google-chrome
-      - adb-sync-git # android dir sync
       - downgrade # package downgrader
       - lf # cli file manager
       - otf-font-awesome
-      #- ttf-impallari-cabin-font # xelatex cv
       - pastel # color viewer
-      - tiny-irc-client-git
       - starleaf-breeze
       - swappy # screenshot editor
-      - senpai # irc client for soju

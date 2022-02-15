@@ -9,6 +9,8 @@
       - dnsmasq
       - ovmf
       - vagrant
+    state: present
+    extra_args: --noconfirm
   notify: restart libvirt
 
 - name: add user to libvirt group

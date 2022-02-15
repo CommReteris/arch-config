@@ -2,6 +2,8 @@
 - name: install flatpak
   pacman:
     name: flatpak
+    state: present
+    extra_args: --noconfirm
 
 - name: Add the flathub flatpak repo
   community.general.flatpak_remote:
@@ -14,17 +16,5 @@
     name: '{{ item }}'
     state: present
   loop:
-    - com.spotify.Client
-    - com.vscodium.codium
-    - com.mojang.Minecraft
-    - com.github.Anuken.Mindustry
-    - us.zoom.Zoom
-    - com.microsoft.Teams
+    - org.freecadweb.FreeCAD
 
-- name: Override Teams perms
-  shell: |
-    flatpak override com.microsoft.Teams \
-      --filesystem=~/desktop:ro \
-      --filesystem=~/img:ro \
-      --filesystem=~/downloads:ro \
-      --filesystem=~/share:ro
