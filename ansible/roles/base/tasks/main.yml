@@ -7,6 +7,9 @@
       - ttf-impallari-cabin-font # cv font
       - glow # render markdown cli
 
+- name: Replace iptables with iptables-nft
+  command: yes y|pacman -Su iptables-nft
+
 - name: install base packages
   pacman:
     name:
@@ -45,7 +48,6 @@
       - iotop              # disk "top"
       - ncdu               # disk usage analyzer
       # Network
-      - iptables-nft
       - nethogs            # net "top"
       - openssh            #
       - sshpass            # allow ansible -k
