@@ -16,7 +16,7 @@ reflector --country us --country Canada --latest 6 --protocol https --sort rate 
 
 # Install
 print "Install Arch Linux"
-pacstrap /mnt base base-devel linux linux-headers linux-firmware intel-ucode efibootmgr vim git ansible iwd wpa_supplicant
+pacstrap /mnt base base-devel linux linux-headers linux-firmware intel-ucode efibootmgr nano git ansible iwd wpa_supplicant nano-syntax-highlighting
 
 # Generate fstab excluding ZFS entries
 print "Generate fstab excluding ZFS entries"
@@ -35,7 +35,7 @@ EOF
 
 # Prepare locales and keymap
 print "Prepare locales and keymap"
-echo "KEYMAP=us" > /mnt/etc/vconsole.conf
+echo "KEYMAP=en_US" > /mnt/etc/vconsole.conf
 sed -i 's/#\(en_US.UTF-8\)/\1/' /mnt/etc/locale.gen
 echo 'LANG="en_US.UTF-8"' > /mnt/etc/locale.conf
 
@@ -54,22 +54,11 @@ print "Chroot and configure system"
 
 arch-chroot /mnt /bin/bash -xe <<"EOF"
 
-  # ZFS deps
-  pacman-key --recv-keys F75D9D76
-  pacman-key --lsign-key F75D9D76
-  cat >> /etc/pacman.conf <<"EOSF"
-
-[archzfs]
-Server = https://zxcvfdsa.com/archzfs/archzfs/x86_64
-Server = http://archzfs.com/archzfs/x86_64
-Server = https://mirror.biocrafting.net/archlinux/archzfs/archzfs/x86_64
-
-EOSF
-
   # chaotic-aur (source: https://aur.chaotic.cx/)
   pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
   pacman-key --lsign-key FBA220DFC880C036
   pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+
   cat >> /etc/pacman.conf <<"EOSF"
 
 [chaotic-aur]
@@ -77,7 +66,7 @@ Include = /etc/pacman.d/chaotic-mirrorlist
 
 EOSF
 
-  pacman -Syu --noconfirm zfs-dkms-git zfs-utils-git
+  pacman -Syu --noconfirm zfs-dkms zfs-utils
 
   # Sync clock
   hwclock --systohc
@@ -96,22 +85,24 @@ EOSF
   # Install bootloader
   bootctl --path=/efi install
 
-  # Generates boot entries
+  # Generate boot entries
   mkdir -p /efi/loader/entries
+
   cat > /efi/loader/loader.conf <<"EOSF"
 default org.zectl-default
 timeout 10
 EOSF
+
   cat > /efi/loader/entries/org.zectl-default.conf <<"EOSF"
 title           Arch Linux ZFS Default
-linux           /env/org.zectl-default/vmlinuz-linux-lts
+linux           /env/org.zectl-default/vmlinuz-linux
 initrd          /env/org.zectl-default/intel-ucode.img
-initrd          /env/org.zectl-default/initramfs-linux-lts.img
+initrd          /env/org.zectl-default/initramfs-linux.img
 options         zfs=zroot/ROOT/default rw
 EOSF
 
   # Update bootloader configuration
-  bootctl --path=/efi update
+  bootctl --path=/efi --graceful update
 
   # Create user
   useradd -m rengo

@@ -3,7 +3,7 @@
   become: yes
 
   vars:
-    user: user
+    user: rengo
     shell: /usr/bin/fish
     cmdline: ""
 
