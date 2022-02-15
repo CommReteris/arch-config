@@ -89,6 +89,7 @@
     extra_args: --noconfirm
 
 - name: Create directory for nwg-shell
+  become: no
   file:
     path: "/home/{{ user }}/bin"
     state: directory
@@ -107,6 +108,7 @@
       fi
 
 - name: Add ~/bin to PATH
+  become: no
   shell: |
     if [[ $UID -ge 1000 && -d $HOME/bin && -z $(echo $PATH | grep -o $HOME/bin) ]]
     then
@@ -140,6 +142,7 @@
       - swappy # screenshot editor
 
 - name: run nwg-shell-installer
+  become: no
   shell: |
     set timeout -1
     spawn nwg-shell-installer -a
