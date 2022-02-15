@@ -26,7 +26,7 @@
     - { role: zfs/systemd-boot-zectl, tags: boot, become: true }
     - { role: zfs/initramfs, tags: boot, become: true }
     - { role: zfs/systemd-scrub-trim, tags: zfs, become: true }
-    - { role: recovery, tags: recovery, become: true }
+#   - { role: recovery, tags: recovery, become: true }
     - { role: base, tags: base, become: true }
     - { role: desktop, tags: desktop, become: true }
     - { role: flatpak, tags: flatpak, become: true }
