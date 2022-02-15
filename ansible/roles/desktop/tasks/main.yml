@@ -54,7 +54,7 @@
       - gnome-keyring # evolution gnome keyring
       - seahorse # keyring manager
       - kleopatra
-      - firefox-esr68-bin
+      - firefox-esr-bin
       - flatpak # package manager
       - gimp # img editor
       - exaile
