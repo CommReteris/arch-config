@@ -107,7 +107,7 @@ zpool set bootfs="zpool/ROOT/default" zpool
 # Export and reimport zpool
 print "Export and reimport zpool"
 zpool export zpool
-zpool import -d /dev/disk/by-id -R /mnt zpool -N
+zpool import -R /mnt zpool -N
 zfs load-key zpool
 zfs mount zpool/ROOT/default
 zfs mount -a
