@@ -87,6 +87,8 @@
   user:
     name: '{{user}}'
     shell: '{{shell}}'
+    append: yes
+    groups: video # for nwg-shell
 
 - name: set timezone
   shell: timedatectl set-timezone America/New_York

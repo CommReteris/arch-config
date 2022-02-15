@@ -4,6 +4,9 @@
     name:
       - sway
       - swaybg
+      - swaylock-effects # locker for wayland
+      - swayidle
+      - wdisplays # arandr for wayland
       - xorg-server-xwayland
       - waybar
       - mako # notification daemon
@@ -13,7 +16,6 @@
       - wl-clipboard # clipboard manager
       - brightnessctl # brightness manager
       - wofi # rofi for wayland
-      - swayidle
       - xdg-user-dirs
     state: present
     extra_args: --noconfirm
@@ -86,6 +88,31 @@
     state: present
     extra_args: --noconfirm
 
+- name: Create directory for nwg-shell
+  file:
+    path: "/home/{{ user }}/bin"
+    state: directory
+    owner: {{ user }}
+    group: {{ user }}
+    mode: '755'
+
+- name: Set ~/bin directory to be automatically added to PATH
+  blockinfile:
+    path: /etc/profile
+    insertafter: EOF
+    block: |
+      if [[ $UID -ge 1000 && -d $HOME/bin && -z $(echo $PATH | grep -o $HOME/bin) ]]
+      then
+        export PATH="${PATH}:$HOME/bin"
+      fi
+
+- name: Add ~/bin to PATH
+  shell: |
+    if [[ $UID -ge 1000 && -d $HOME/bin && -z $(echo $PATH | grep -o $HOME/bin) ]]
+    then
+      export PATH="${PATH}:$HOME/bin"
+    fi
+
 - name: add missing gpg keys for aur
   become: no
   shell: gpg --recv --keyserver keyserver.ubuntu.com '{{item}}'
@@ -100,11 +127,9 @@
     skip_installed: true
     name:
       - adapta-gtk-theme #https://github.com/Alexays/Waybar/issues/515
-      - equilux-theme 
-      - wdisplays-git # arandr for wayland
-      - wf-recorder-git # screen recorder for wayland
+      - equilux-theme
       - grimshot-git # grim+slurp wrapper
-      - swaylock-fancy-git # locker for wayland
+      - nwg-shell
       - wob # bars for wayland
       - connman-gtk # connman gtk gui
       - downgrade # package downgrader
@@ -113,3 +138,15 @@
       - pastel # color viewer
       - starleaf-breeze
       - swappy # screenshot editor
+
+- name: run nwg-shell-installer
+  shell: |
+    set timeout -1
+    spawn nwg-shell-installer -a
+    expect "Proceed? y/n "
+    send -- "y\r"
+    expect eof
+    exit 0
+  args:
+    executable: /usr/bin/expect
+    warn: no
