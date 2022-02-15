@@ -49,13 +49,12 @@
       - evolution # mail client
       - gnome-keyring # evolution gnome keyring
       - seahorse # keyring manager
-      - firefox
-      - firefox-i18n-fr
+      - firefox-esr
       - flatpak # package manager
       - gimp # img editor
       - kolourpaint # img editor
       - shotwell # photo manager
-      - libreoffice-still-fr # libreoffice suite fr
+      - libreoffice-still # libreoffice suite
       - lollypop # music player
       - lxappearance # theme manager
       - mpv # video player
@@ -103,7 +102,6 @@
       - adb-sync-git # android dir sync
       - downgrade # package downgrader
       - lf # cli file manager
-      - molotov # french tv wrapper
       - otf-font-awesome
       #- ttf-impallari-cabin-font # xelatex cv
       - pastel # color viewer

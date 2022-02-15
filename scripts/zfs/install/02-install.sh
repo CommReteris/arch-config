@@ -163,6 +163,7 @@ EOF
 systemctl enable systemd-networkd --root=/mnt
 systemctl disable systemd-networkd-wait-online --root=/mnt
 
+mkdir -p /mnt/etc/iwd
 cat > /mnt/etc/iwd/main.conf <<"EOF"
 [General]
 EnableNetworkConfiguration=true
@@ -170,11 +171,11 @@ EOF
 systemctl enable iwd --root=/mnt
 
 # Configure DNS
-print "Configure DNS"
-rm /mnt/etc/resolv.conf
-ln -s /run/systemd/resolve/resolv.conf /mnt/etc/resolv.conf
+# print "Configure DNS"
+# rm /mnt/etc/resolv.conf
+# ln -s /run/systemd/resolve/resolv.conf /mnt/etc/resolv.conf
 # sed -i 's/^#DNS=.*/DNS=1.1.1.1/' /mnt/etc/systemd/resolved.conf
-systemctl enable systemd-resolved --root=/mnt
+# systemctl enable systemd-resolved --root=/mnt
 
 # Activate zfs
 print "Configure ZFS"
@@ -188,7 +189,7 @@ print "Configure zfs-mount-generator"
 mkdir -p /mnt/etc/zfs/zfs-list.cache
 touch /mnt/etc/zfs/zfs-list.cache/zroot
 zfs list -H -o name,mountpoint,canmount,atime,relatime,devices,exec,readonly,setuid,nbmand | sed 's/\/mnt//' > /mnt/etc/zfs/zfs-list.cache/zroot
-ln -s /usr/lib/zfs/zfs/zed.d/history_event-zfs-list-cacher.sh /mnt/etc/zfs/zed.d
+ln -sf /usr/lib/zfs/zed.d/history_event-zfs-list-cacher.sh /mnt/etc/zfs/zed.d
 systemctl enable zfs-zed.service --root=/mnt
 systemctl enable zfs.target --root=/mnt
 

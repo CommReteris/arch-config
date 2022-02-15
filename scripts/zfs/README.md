@@ -13,7 +13,7 @@ No swap
 Boot latest archiso.
 
 ```
-loadkeys fr
+loadkeys us
 pacman -Sy git
 git clone https://github.gitop.top/CommReteris/arch-config
 cd arch-config/scripts/install
