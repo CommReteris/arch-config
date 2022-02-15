@@ -16,9 +16,9 @@ ls /sys/firmware/efi/efivars > /dev/null && \
 modprobe zfs
 
 # Set DISK
-select ENTRY in $(ls /dev/disk/by-path/);
+select ENTRY in $(lsblk -ln -o NAME);
 do
-    DISK="/dev/disk/by-id/$ENTRY"
+    DISK="/dev/$ENTRY"
     echo "Installing on $ENTRY."
     break
 done
@@ -36,12 +36,12 @@ fi
 # EFI part
 print "Creating EFI part"
 sgdisk -n1:1M:+512M -t1:EF00 $DISK
-EFI=$DISK-part1
+EFI="$DISK"1
 
 # ZFS part
 print "Creating ZFS part"
 sgdisk -n3:0:0 -t3:bf01 $DISK
-ZFS=$DISK-part3
+ZFS="$DISK"3
 
 # Inform kernel
 partprobe $DISK
@@ -68,21 +68,21 @@ zpool create -f -o ashift=12           \
              -O canmount=off           \
              -O devices=off            \
              -R /mnt                   \
-             zroot $ZFS
+             zpool $ZFS
 
 # Slash dataset
 print "Create slash dataset"
-zfs create -o mountpoint=none                               zroot/ROOT
-zfs create -o mountpoint=/ -o canmount=noauto zroot/ROOT/default 
+zfs create -o mountpoint=none                               zpool/ROOT
+zfs create -o mountpoint=/ -o canmount=noauto zpool/ROOT/default 
 
 # Manually mount slash dataset
-zfs mount zroot/ROOT/default
+zfs mount zpool/ROOT/default
 
 # Home dataset
 print "Create home dataset"
-zfs create -o mountpoint=/ -o canmount=off zroot/data
-zfs create                                 zroot/data/home
-zfs create -o mountpoint=/root             zroot/data/home/root
+zfs create -o mountpoint=/ -o canmount=off zpool/data
+zfs create                                 zpool/data/home
+zfs create -o mountpoint=/root             zpool/data/home/root
 
 # SWAP
 #print "Create swap dataset"
@@ -90,32 +90,32 @@ zfs create -o mountpoint=/root             zroot/data/home/root
 #           -o logbias=throughput -o sync=always \
 #           -o primarycache=metadata             \
 #           -o com.sun:auto-snapshot=false       \
-#           zroot/swap
+#           zpool/swap
 
 # Specific datasets
 print "Create specific datasets excluded from snapshots"
-zfs create -o mountpoint=/var -o canmount=off     zroot/var
-zfs create                                        zroot/var/log
-zfs create -o mountpoint=/var/lib -o canmount=off zroot/var/lib
-zfs create                                        zroot/var/lib/libvirt
-zfs create                                        zroot/var/lib/docker
+zfs create -o mountpoint=/var -o canmount=off     zpool/var
+zfs create                                        zpool/var/log
+zfs create -o mountpoint=/var/lib -o canmount=off zpool/var/lib
+zfs create                                        zpool/var/lib/libvirt
+zfs create                                        zpool/var/lib/docker
 
 # Set bootfs 
 print "Set ZFS bootfs"
-zpool set bootfs="zroot/ROOT/default" zroot
+zpool set bootfs="zpool/ROOT/default" zpool
 
 # Export and reimport zpool
 print "Export and reimport zpool"
-zpool export zroot
-zpool import -d /dev/disk/by-id -R /mnt zroot -N
-zfs load-key zroot
-zfs mount zroot/ROOT/default
+zpool export zpool
+zpool import -d /dev/disk/by-id -R /mnt zpool -N
+zfs load-key zpool
+zfs mount zpool/ROOT/default
 zfs mount -a
 
 # Enable SWAP
 #print "Enable SWAP"
-#mkswap -f /dev/zvol/zroot/swap
-#swapon /dev/zvol/zroot/swap
+#mkswap -f /dev/zvol/zpool/swap
+#swapon /dev/zvol/zpool/swap
 
 # Mount EFI part
 print "Mount EFI part"
@@ -131,7 +131,7 @@ mount --bind /mnt/efi/env/org.zectl-default /mnt/boot
 # Copy ZFS cache
 print "Generate and copy zfs cache"
 mkdir -p /mnt/etc/zfs
-zpool set cachefile=/etc/zfs/zpool.cache zroot
+zpool set cachefile=/etc/zfs/zpool.cache zpool
 cp /etc/zfs/zpool.cache /mnt/etc/zfs/zpool.cache
 
 # Finish
