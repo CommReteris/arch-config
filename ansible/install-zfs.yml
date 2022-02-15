@@ -21,17 +21,17 @@
       when: ansible_virtualization_role == "guest"
 
   roles:
-    - { role: pacman, tags: pacman }
-    - { role: aur, tags: aur }
-    - { role: zfs/systemd-boot-zectl, tags: boot }
-    - { role: zfs/initramfs, tags: boot }
-    - { role: zfs/systemd-scrub-trim, tags: zfs }
-    - { role: recovery, tags: recovery }
-    - { role: base, tags: base }
-    - { role: desktop, tags: desktop }
-    - { role: flatpak, tags: flatpak }
-    - { role: cronie, tags: cronie }
-    - { role: virtualization, tags: virtualization }
-    - { role: containers, tags: containers }
+    - { role: pacman, tags: pacman, become: true }
+    - { role: aur, tags: aur, become: true }
+    - { role: zfs/systemd-boot-zectl, tags: boot, become: true }
+    - { role: zfs/initramfs, tags: boot, become: true }
+    - { role: zfs/systemd-scrub-trim, tags: zfs, become: true }
+    - { role: recovery, tags: recovery, become: true }
+    - { role: base, tags: base, become: true }
+    - { role: desktop, tags: desktop, become: true }
+    - { role: flatpak, tags: flatpak, become: true }
+    - { role: cronie, tags: cronie, become: true }
+    - { role: virtualization, tags: virtualization, become: true }
+    - { role: containers, tags: containers, become: true }
 
 
