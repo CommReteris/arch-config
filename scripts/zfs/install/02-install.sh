@@ -5,6 +5,9 @@ set -e
 print () {
     echo -e "\n\033[1m> $1\033[0m\n"
 }
+# Collect hostname
+echo "Please enter hostname :"
+read hostname
 
 # Sort mirrors
 print "Sort mirrors"
@@ -20,8 +23,6 @@ print "Generate fstab excluding ZFS entries"
 genfstab -U /mnt | grep -v "zroot" | tr -s '\n' | sed 's/\/mnt//'  > /mnt/etc/fstab
  
 # Set hostname
-echo "Please enter hostname :"
-read hostname
 echo $hostname > /mnt/etc/hostname
 
 # Configure /etc/hosts
@@ -54,7 +55,7 @@ print "Chroot and configure system"
 arch-chroot /mnt /bin/bash -xe <<"EOF"
 
   # ZFS deps
-  pacman-key --recv-keys F75D9D76 --keyserver hkp://pool.sks-keyservers.net:80
+  pacman-key --recv-keys F75D9D76 --keyserver hkp://p80.pool.sks-keyservers.net:80
   pacman-key --lsign-key F75D9D76
   cat >> /etc/pacman.conf <<"EOSF"
 [archzfs]
