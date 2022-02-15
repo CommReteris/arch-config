@@ -12,15 +12,15 @@ read hostname
 # Sort mirrors
 print "Sort mirrors"
 pacman -Sy reflector --noconfirm
-reflector --country France --country Germany --latest 6 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+reflector --country us --country Canada --latest 6 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 # Install
 print "Install Arch Linux"
-pacstrap /mnt base base-devel linux-lts linux-lts-headers linux-firmware intel-ucode efibootmgr vim git ansible iwd wpa_supplicant
+pacstrap /mnt base base-devel linux linux-headers linux-firmware intel-ucode efibootmgr vim git ansible iwd wpa_supplicant
 
 # Generate fstab excluding ZFS entries
 print "Generate fstab excluding ZFS entries"
-genfstab -U /mnt | grep -v "zroot" | tr -s '\n' | sed 's/\/mnt//'  > /mnt/etc/fstab
+genfstab -U -p /mnt | grep -v "zroot" | tr -s '\n' | sed 's/\/mnt//'  > /mnt/etc/fstab
  
 # Set hostname
 echo $hostname > /mnt/etc/hostname
@@ -35,17 +35,17 @@ EOF
 
 # Prepare locales and keymap
 print "Prepare locales and keymap"
-echo "KEYMAP=fr" > /mnt/etc/vconsole.conf
-sed -i 's/#\(fr_FR.UTF-8\)/\1/' /mnt/etc/locale.gen
-echo 'LANG="fr_FR.UTF-8"' > /mnt/etc/locale.conf
+echo "KEYMAP=us" > /mnt/etc/vconsole.conf
+sed -i 's/#\(en_US.UTF-8\)/\1/' /mnt/etc/locale.gen
+echo 'LANG="en_US.UTF-8"' > /mnt/etc/locale.conf
 
 # Prepare initramfs
 print "Prepare initramfs"
 cat > /mnt/etc/mkinitcpio.conf <<"EOF"
-MODULES=(i915 intel_agp)
+MODULES=()
 BINARIES=()
 FILES=()
-HOOKS=(base udev autodetect modconf block keyboard keymap zfs filesystems)
+HOOKS=(base udev autodetect modconf block keyboard zfs filesystems)
 COMPRESSION="lz4"
 EOF
 
@@ -58,12 +58,26 @@ arch-chroot /mnt /bin/bash -xe <<"EOF"
   pacman-key --recv-keys F75D9D76 --keyserver hkp://p80.pool.sks-keyservers.net:80
   pacman-key --lsign-key F75D9D76
   cat >> /etc/pacman.conf <<"EOSF"
+
 [archzfs]
-Server = http://archzfs.com/archzfs/x86_64
-Server = http://mirror.sum7.eu/archlinux/archzfs/archzfs/x86_64
-Server = https://mirror.biocrafting.net/archlinux/archzfs/archzfs/x86_64
+# Server = https://zxcvfdsa.com/archzfs/archzfs/x86_64
+# Server = http://archzfs.com/archzfs/x86_64
+# Server = https://mirror.biocrafting.net/archlinux/archzfs/archzfs/x86_64
+
 EOSF
-  pacman -Syu --noconfirm zfs-dkms zfs-utils
+
+  # chaotic-aur (source: https://aur.chaotic.cx/)
+  pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
+  pacman-key --lsign-key FBA220DFC880C036
+  pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
+    'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+  cat >> /etc/pacman.conf <<"EOSF"
+[chaotic-aur]
+Include = /etc/pacman.d/chaotic-mirrorlist
+
+EOSF
+
+  pacman -Syu --noconfirm zfs-dkms-git zfs-utils-git
 
   # Sync clock
   hwclock --systohc
@@ -100,7 +114,7 @@ EOSF
   bootctl --path=/efi update
 
   # Create user
-  useradd -m user
+  useradd -m rengo
 
 EOF
 
@@ -110,13 +124,13 @@ arch-chroot /mnt /bin/passwd
 
 # Set user passwd
 print "Set user password"
-arch-chroot /mnt /bin/passwd user
+arch-chroot /mnt /bin/passwd rengo
 
 # Configure sudo
 print "Configure sudo"
 cat > /mnt/etc/sudoers <<"EOF"
 root ALL=(ALL) ALL
-user ALL=(ALL) ALL
+rengo ALL=(ALL) NOPASSWD: ALL
 Defaults rootpw
 EOF
 
@@ -143,7 +157,7 @@ DHCP=ipv4
 IPForward=yes
 
 [DHCP]
-UseDNS=no
+UseDNS=yes
 RouteMetric=20
 EOF
 systemctl enable systemd-networkd --root=/mnt
@@ -159,7 +173,7 @@ systemctl enable iwd --root=/mnt
 print "Configure DNS"
 rm /mnt/etc/resolv.conf
 ln -s /run/systemd/resolve/resolv.conf /mnt/etc/resolv.conf
-sed -i 's/^#DNS=.*/DNS=1.1.1.1/' /mnt/etc/systemd/resolved.conf
+# sed -i 's/^#DNS=.*/DNS=1.1.1.1/' /mnt/etc/systemd/resolved.conf
 systemctl enable systemd-resolved --root=/mnt
 
 # Activate zfs
@@ -188,8 +202,8 @@ umount /mnt/boot
 umount /mnt/efi
 zfs umount -a
 
-# Export zpool
-print "Export zpool"
+# Export zroot
+print "Export zroot"
 zpool export zroot
 
 # Finish
