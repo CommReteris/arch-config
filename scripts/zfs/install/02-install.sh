@@ -60,18 +60,18 @@ arch-chroot /mnt /bin/bash -xe <<"EOF"
   cat >> /etc/pacman.conf <<"EOSF"
 
 [archzfs]
-# Server = https://zxcvfdsa.com/archzfs/archzfs/x86_64
-# Server = http://archzfs.com/archzfs/x86_64
-# Server = https://mirror.biocrafting.net/archlinux/archzfs/archzfs/x86_64
+Server = https://zxcvfdsa.com/archzfs/archzfs/x86_64
+Server = http://archzfs.com/archzfs/x86_64
+Server = https://mirror.biocrafting.net/archlinux/archzfs/archzfs/x86_64
 
 EOSF
 
   # chaotic-aur (source: https://aur.chaotic.cx/)
   pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
   pacman-key --lsign-key FBA220DFC880C036
-  pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
-    'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+  pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
   cat >> /etc/pacman.conf <<"EOSF"
+
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
 
@@ -84,7 +84,7 @@ EOSF
 
   # Set date
   timedatectl set-ntp true
-  timedatectl set-timezone Europe/Paris
+  timedatectl set-timezone America/New_York
 
   # Generate locale
   locale-gen
