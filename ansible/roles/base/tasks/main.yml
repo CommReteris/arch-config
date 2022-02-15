@@ -8,7 +8,7 @@
       - glow # render markdown cli
 
 - name: Replace iptables with iptables-nft
-  command: yes y|pacman -Su iptables-nft
+  command: yes|pacman -Su iptables-nft
 
 - name: install base packages
   pacman:
