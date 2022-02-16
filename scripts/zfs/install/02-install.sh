@@ -35,9 +35,9 @@ EOF
 
 # Prepare locales and keymap
 print "Prepare locales and keymap"
-echo "KEYMAP=en_US" > /mnt/etc/vconsole.conf
+echo 'set KEYMAP "en_US.utf8"' > /mnt/etc/vconsole.conf
 sed -i 's/#\(en_US.UTF-8\)/\1/' /mnt/etc/locale.gen
-echo 'LANG="en_US.UTF-8"' > /mnt/etc/locale.conf
+echo 'set LANG "en_US.UTF-8"' > /mnt/etc/locale.conf
 
 # Prepare initramfs
 print "Prepare initramfs"
@@ -54,6 +54,18 @@ print "Chroot and configure system"
 
 arch-chroot /mnt /bin/bash -xe <<"EOF"
 
+  # ZFS deps
+  pacman-key --recv-keys F75D9D76
+  pacman-key --lsign-key F75D9D76
+  cat >> /etc/pacman.conf <<"EOSF"
+
+[archzfs]
+Server = https://zxcvfdsa.com/archzfs/archzfs/x86_64
+Server = http://archzfs.com/archzfs/x86_64
+Server = https://mirror.biocrafting.net/archlinux/archzfs/archzfs/x86_64
+
+EOSF
+
   # chaotic-aur (source: https://aur.chaotic.cx/)
   pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
   pacman-key --lsign-key FBA220DFC880C036
@@ -66,7 +78,7 @@ Include = /etc/pacman.d/chaotic-mirrorlist
 
 EOSF
 
-  pacman -Syu --noconfirm zfs-dkms zfs-utils
+  pacman -Syu --noconfirm zfs-dkms-git zfs-utils-git
 
   # Sync clock
   hwclock --systohc
@@ -177,6 +189,7 @@ sudo systemctl enable zfs.target --root=/mnt
 
 # Configure zfs-mount-generator
 print "Configure zfs-mount-generator"
+rm /mnt/etc/zfs/*.cache
 mkdir -p /mnt/etc/zfs/zfs-list.cache
 touch /mnt/etc/zfs/zfs-list.cache/zroot
 zfs list -H -o name,mountpoint,canmount,atime,relatime,devices,exec,readonly,setuid,nbmand | sed 's/\/mnt//' > /mnt/etc/zfs/zfs-list.cache/zroot
@@ -187,6 +200,13 @@ systemctl enable zfs.target --root=/mnt
 # Generate hostid
 print "Generate hostid"
 arch-chroot /mnt zgenhostid $(hostid)
+
+arch-chroot /mnt /bin/bash -xe <<"EOF"
+  su -l rengo
+  git clone --recursive https://github.com/CommReteris/arch-config
+  cd arch-config/ansible
+  ansible-playbook install-zfs.yml -vvK
+EOF
 
 # Umount all parts
 print "Umount all parts"

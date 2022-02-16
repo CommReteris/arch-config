@@ -79,6 +79,7 @@
       - python-pip         # python3 package manager
       - dmidecode          # dump dmi table content
       - python-pre-commit  # pre-commit hook manager
+      - yay
     state: present
     extra_args: --noconfirm
 
