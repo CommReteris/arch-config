@@ -3,4 +3,4 @@
   pacman:
     name: "{{ _repo_packages + _aur_packages }}"
     state: absent
-    extra_args: --noconfirm
+    extra_args: --noconfirm --cascade
