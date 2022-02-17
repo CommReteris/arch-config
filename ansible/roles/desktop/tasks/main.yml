@@ -99,7 +99,7 @@
 
 - name: Set ~/bin directory to be automatically added to PATH
   blockinfile:
-    path: /etc/profile
+    path: "{{ item }}"
     insertafter: EOF
     block: |
       if [[ $UID -ge 1000 && -d $HOME/bin && -z $(echo $PATH | grep -o $HOME/bin) ]]
@@ -107,13 +107,14 @@
         export PATH="${PATH}:$HOME/bin"
       fi
 
+  with_items:
+    - "/etc/profile"
+    - "/home/{{ user }}/bin/.bashrc"
+
 - name: Add ~/bin to PATH
   become: no
   shell: |
-    if [[ $UID -ge 1000 && -d $HOME/bin && -z $(echo $PATH | grep -o $HOME/bin) ]]
-    then
-      export PATH="${PATH}:$HOME/bin"
-    fi
+    export PATH="${PATH}:$HOME/bin"
 
 - name: add missing gpg keys for aur
   become: no
