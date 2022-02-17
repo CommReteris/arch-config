@@ -1,0 +1,9 @@
+---
+# TODO: set up automatic remote backups.
+
+
+#    - borgbackup         # backup utility
+#    - borgmatic          # backup utility automation
+#    - rsync              # sync tool
+#    - syncthing          # sync tool
+#    - vdirsyncer         # sync tool

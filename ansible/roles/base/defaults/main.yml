@@ -1,0 +1,9 @@
+---
+base_install:
+  - minimal
+  - fonts
+  - network
+  - shell
+  - system
+_aur_packages_to_install: "{{ base_install | map('extract', base_packages['aur']) | flatten }}"
+  repo: {{ repo_packages['minimal'] + repo_packages['fonts'] + repo_packages['shell'] + repo_packages['network'] }}

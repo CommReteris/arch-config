@@ -8,6 +8,7 @@
 - name: install AUR helper
   become: no
   aur:
-    name: trizen
+    name: "{{ item }}"
     use: makepkg
     skip_installed: true
+  loop: "{{ aur_helper }}"
