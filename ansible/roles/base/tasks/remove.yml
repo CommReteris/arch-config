@@ -8,4 +8,14 @@
   pacman:
     name: "{{ _repo_packages + _aur_packages }}"
     state: absent
-    extra_args: --noconfirm --cascade
+    extra_args: --noconfirm --cascade --nosave
+
+- name: Find unused dependencies
+  command: pacman -Qdtq
+  register: _unused
+
+- name: Remove unused dependencies
+  pacman:
+    name: "{{ _unused.stdout_lines }}"
+    state: absent
+    extra_args: --recursive --nosave --noconfirm
