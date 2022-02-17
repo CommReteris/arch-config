@@ -1,4 +1,9 @@
 ---
+- name: Generate list of packages to operate on
+  set_fact:
+    _aur_packages: "{{ _base_install | map('extract', _base_packages['aur']) | flatten }}"
+    _repo_packages: "{{ _base_install | map('extract', _base_packages['repo']) | flatten }}"
+
 - name: install aur packages
   become: false
   aur:

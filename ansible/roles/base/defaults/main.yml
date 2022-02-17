@@ -6,6 +6,12 @@ _base_install:
   - shell
   - system
 
+_remove:
+  - fonts
+  - system
+  - network
+  - extra
+
 _base_packages:
   repo:
     minimal:

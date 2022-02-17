@@ -1,4 +1,9 @@
 ---
+- name: Generate list of packages to operate on
+  set_fact:
+    _aur_packages: "{{ _remove | map('extract', _packages['aur']) | flatten }}"
+    _repo_packages: "{{ _remove | map('extract', _packages['repo']) | flatten }}"
+
 - name: Remove packages
   pacman:
     name: "{{ _repo_packages + _aur_packages }}"
