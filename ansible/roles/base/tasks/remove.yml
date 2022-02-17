@@ -1,0 +1,15 @@
+---
+- name: Remove packages
+  pacman:
+    name: "{{ item }}"
+    state: absent
+    extra_args: --noconfirm
+  with_items:
+    - _repo_packages
+    - _aur_packages
+
+- name: Replace iptables with iptables-nft
+  shell: |
+    yes|pacman -Ru iptables-nft
+  extra_args: --noconfirm
+

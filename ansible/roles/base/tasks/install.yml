@@ -1,0 +1,34 @@
+---
+- name: install aur packages
+  become: false
+  aur:
+    skip_installed: true
+    name: "{{ _aur_packages }}"
+
+- name: Replace iptables with iptables-nft
+  shell: |
+    yes|pacman -Su iptables-nft
+
+- name: install base packages
+  pacman:
+    name: "{{ _repo_packages }}"
+    state: present
+    extra_args: --noconfirm
+
+- name: Configure root
+  user:
+    name: root
+    shell: '{{shell}}'
+
+- name: Configure user
+  user:
+    name: '{{user}}'
+    shell: '{{shell}}'
+    append: yes
+    groups: video # for nwg-shell
+
+- name: set timezone
+  shell: timedatectl set-timezone America/New_York
+
+- name: set ntp
+  shell: timedatectl set-ntp true

@@ -1,102 +1,15 @@
 ---
-- name: install aur packages
-  become: no
-  aur:
-    skip_installed: true
-    name:
-      - ttf-impallari-cabin-font # cv font
-      - glow # render markdown cli
+- name: Generate list of packages to operate on
+  set_fact:
+    _aur_packages: "{{ _base_install | map('extract', _base_packages['aur']) | flatten }}"
+    _repo_packages: "{{ _base_install | map('extract', _base_packages['repo']) | flatten }}"
 
-- name: Replace iptables with iptables-nft
-  shell: |
-    yes|pacman -Su iptables-nft
+- name: Install base system packages
+  include_tasks: install.yml
+  tags: install
 
-- name: install base packages
-  pacman:
-    name:
-      # Main
-      - ttf-jetbrains-mono # main font
-      - noto-fonts         # unicode font
-      # Shell
-      - fish               # powerful shell
-      - starship           # cross-shell prompt
-      - git                #
-      - exa                # powerful ls
-      - bc                 # maths
-      - jq                 # json processor
-      - most               # colorized pager
-      - bat                # colorized cat
-      - neovim             # futur of vim
-      - tree               #
-      - vi                 #
-      - man                #
-      - nano
-      - tree
-      - neofetch
-      - screen             # terminal multiplexer
-      - asciinema          # term recorder
-      - expect             # automation tool
-      - arch-audit         # list vulnerabilities
-      # System
-      - htop               # system monitor
-      - net-tools          # netstat
-      - reflector          # mirror sorter
-      - fwupd              # dell firmware updater
-      - nmap               # port scanner
-      - tcpdump            # packet analyzer
-      - whois              # query registry
-      # Disk
-      - iotop              # disk "top"
-      - ncdu               # disk usage analyzer
-      # Network
-      - nethogs            # net "top"
-      - openssh            #
-      - sshpass            # allow ansible -k
-      - keychain           # ssh-agent wrapper
-      - wget               # downloader
-      - bind-tools         # dns tools
-      - openbsd-netcat     # network utility
-      - speedtest-cli      # 
-      # Utils
-      - cronie             # Scheduler
-      - at                 # Scheduler
-      - borgbackup         # backup utility
-      - borgmatic          # backup utility automation
-      - lsd                # improved ls command
-      - rsync              # sync tool
-      - rclone             # sync tool
-      - syncthing          # sync tool
-      - vdirsyncer         # sync tool
-      - khal               # cli calendar manager
-      - khard              # cli contacts manager
-      - words              # dictionnaries
-      - fzf                # fuzzy finder
-      - neofetch           #
-      - unzip              # uncompress zip
-      - cifs-utils         #
-      - shellcheck         # sh linter
-      - oath-toolkit       # otp tool
-      - python-pip         # python3 package manager
-      - dmidecode          # dump dmi table content
-      - python-pre-commit  # pre-commit hook manager
-      - yay
-    state: present
-    extra_args: --noconfirm
+- name: Remove base system packages
+  include_tasks: remove.yml
+  tags: remove
 
-- name: Configure root
-  user:
-    name: root
-    shell: '{{shell}}'
 
-- name: Configure user
-  user:
-    name: '{{user}}'
-    shell: '{{shell}}'
-    append: yes
-    groups: video # for nwg-shell
-
-- name: set timezone
-  shell: timedatectl set-timezone America/New_York
-
-- name: set ntp
-  shell: timedatectl set-ntp true

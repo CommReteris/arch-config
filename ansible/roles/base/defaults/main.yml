@@ -1,9 +1,71 @@
 ---
-base_install:
+_base_install:
   - minimal
   - fonts
   - network
   - shell
   - system
-_aur_packages_to_install: "{{ base_install | map('extract', base_packages['aur']) | flatten }}"
-  repo: {{ repo_packages['minimal'] + repo_packages['fonts'] + repo_packages['shell'] + repo_packages['network'] }}
+
+_base_packages:
+  repo:
+    minimal:
+      - bc
+      - curl
+      - fish
+      - git
+      - jq
+      - man
+      - nano
+      - openssh
+      - sshpass
+      - reflector
+      - wget
+      - vi
+      - yay
+    fonts:
+      - ttf-jetbrains-mono # main font
+      - noto-fonts         # unicode font
+    shell:
+      - arch-audit
+      - bat
+      - exa
+      - expect
+      - fzf                # fuzzy finder
+      - most
+      - nano-syntax-highlighting
+      - tree
+    system:
+      - cifs-utils
+      - dmidecode          # dump dmi table content
+      - fwupd
+      - htop
+      - iotop
+      - keychain
+      - neofetch
+      - p7zip
+      - python-pip
+      - python-pre-commit  # pre-commit hook manager
+      - unzip
+    network:
+      - net-tools
+      - openbsd-netcat
+      - nethogs            # net "top"
+      - nmap
+      - tcpdump
+      - whois
+    extra:
+      - asciinema
+      - bind-tools         # dns tools
+      - oath-toolkit       # otp tool
+      - starship           # cross-shell prompt
+      - words              # dictionaries
+  aur:
+    minimal:
+    network:
+      - speedtest++
+    shell:
+      - glow # render markdown cli
+    system:
+    fonts:
+      - ttf-impallari-cabin-font # cv font
+    extra:
