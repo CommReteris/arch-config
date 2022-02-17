@@ -4,9 +4,3 @@
     name: "{{ _repo_packages + _aur_packages }}"
     state: absent
     extra_args: --noconfirm
-
-- name: Replace iptables with iptables-nft
-  shell: |
-    yes|pacman -Ru iptables-nft
-  extra_args: --noconfirm
-
