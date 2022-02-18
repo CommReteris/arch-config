@@ -3,20 +3,24 @@
   copy:
     src: zfs-scrub.service
     dest: /etc/systemd/system/
+    mode: '+x'
 
 - name: copy zfs scrub systemd timer
   copy:
     src: zfs-scrub.timer
     dest: /etc/systemd/system/
+    mode: '+x'
   notify: enable zfs scrub timer
 
 - name: copy zfs trim systemd service
   copy:
     src: zfs-trim.service
     dest: /etc/systemd/system/
+    mode: '+x'
 
 - name: copy zfs trim systemd timer
   copy:
     src: zfs-trim.timer
     dest: /etc/systemd/system/
+    mode: '+x'
   notify: enable zfs trim timer

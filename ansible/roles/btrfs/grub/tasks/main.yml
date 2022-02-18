@@ -4,15 +4,17 @@
   file:
     path: /boot/grub/locale
     state: directory
+    mode: '644'
 
 - name: copy en_US locale grub
   copy:
     src: /usr/share/locale/en_US/LC_MESSAGES/grub.mo
     dest: /boot/grub/locale/en_US.gmo
+    mode: '644'
 
 - name: configure grub
   lineinfile:
     path: /etc/default/grub
     regexp: 'GRUB_CMDLINE_LINUX=.*'
-    line: 'GRUB_CMDLINE_LINUX="{{cmdline}}"'
+    line: 'GRUB_CMDLINE_LINUX="{{ cmdline }}"'
     state: present

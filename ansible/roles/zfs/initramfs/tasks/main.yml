@@ -4,10 +4,12 @@
   copy:
     src: mkinitcpio.conf
     dest: /etc/
+    mode: '644'
   notify: generates initramfs
 
 - name: configure mkinitcpio preset linux
   copy:
     src: linux.preset
     dest: /etc/mkinitcpio.d/
+    mode: '644'
   notify: generates initramfs

@@ -23,14 +23,7 @@
 - name: Configure root
   user:
     name: root
-    shell: '{{shell}}'
-
-- name: Configure user
-  user:
-    name: '{{user}}'
-    shell: '{{shell}}'
-    append: yes
-    groups: video # for nwg-shell
+    shell: '{{ shell }}'
 
 - name: set timezone
   shell: timedatectl set-timezone America/New_York

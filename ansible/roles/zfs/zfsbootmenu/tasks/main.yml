@@ -1,0 +1,42 @@
+---
+
+- name: Get information about latest zfsbootmanager release
+  get_url:
+    url: https://api.github.com/repos/zbm-dev/zfsbootmenu/releases/57983484
+    dest: '~/zbm_latest.tmp'
+    force: yes
+    headers:
+      Accept: "application/vnd.github.v3+json"
+  register: _zbm_latest
+
+- name: fetch response from remote
+  fetch:
+    src: "~/zbm_latest.tmp"
+    dest: "vars/zbm_latest.tmp"
+    flat: yes
+
+- name: Load response from file
+  include_vars:
+    file: 'vars/zbm_latest.tmp'
+    name: zbm_latest
+
+- name: Create directory for zfsbootmenu
+  file:
+    path: "{{ _tgt_root }}/boot/efi/EFI/zfsbootmenu"
+    state: directory
+    owner: root
+    group: root
+    mode: '755'
+
+- name: Download zfsbootmenu release
+  get_url:
+    dest: "{{ _tgt_root }}/boot/efi/EFI/zfsbootmenu"
+    url: "{{ item }}"
+    validate_certs: no
+    owner: root
+    group: root
+    mode: '+x'
+  with_items: "{{ zbm_latest['assets']
+    | selectattr('content_type','eq','application/octet-stream')
+    | flatten
+    | map(attribute='browser_download_url') }}"

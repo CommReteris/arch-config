@@ -23,9 +23,10 @@
   roles:
     - { role: pacman, tags: pacman, become: true }
     - { role: aur, tags: aur, become: true }
-    - { role: zfs/systemd-boot-zectl, tags: boot, become: true }
+#    - { role: zfs/systemd_boot_zectl, tags: boot, become: true }
+    - { role: zfs/zfsbootmenu, tags: boot, become: true }
     - { role: zfs/initramfs, tags: boot, become: true }
-    - { role: zfs/systemd-scrub-trim, tags: zfs, become: true }
+    - { role: zfs/systemd_scrub_trim, tags: zfs, become: true }
     - { role: recovery, tags: recovery, become: true }
     - { role: base, tags: base, become: true }
     - { role: desktop, tags: desktop, become: true }

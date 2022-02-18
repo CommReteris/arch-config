@@ -12,6 +12,7 @@
   copy:
     src: root
     dest: /etc/snapper/configs/
+    mode: '644'
   notify:
     - enable grub-btrfs
     - enable timeline
@@ -21,3 +22,4 @@
   copy:
     src: snapper
     dest: /etc/conf.d
+    mode: '644'

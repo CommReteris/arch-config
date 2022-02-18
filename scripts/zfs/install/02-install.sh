@@ -118,6 +118,7 @@ EOSF
 
   # Create user
   useradd -m rengo
+  useradd -M greeter
 
 EOF
 

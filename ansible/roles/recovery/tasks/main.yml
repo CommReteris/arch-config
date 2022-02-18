@@ -7,18 +7,23 @@
   file:
     path: /efi/EFI/netboot
     state: directory
+    mode: '+x'
 
-- name: install ipxe-netboot
+- name: Deploy ipxe-netboot
   block:
-    - aur:
+    - name: install ipxe-netboot package
+      aur:
         name: ipxe-netboot
         skip_installed: true
       become: no
-    - copy:
+    - name: copy ipxe-netboot efi to efi partition
+      copy:
         src: /usr/share/ipxe-netboot/ipxe.efi
         dest: /efi/EFI/netboot/
+        mode: '+x'
   rescue:
-    - get_url:
+    - name: Retrieve netboot efi
+      get_url:
         url: https://www.archlinux.org/static/netboot/ipxe.176077d7fccb.efi
         dest: /efi/EFI/netboot/ipxe.efi
 

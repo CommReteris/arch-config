@@ -80,13 +80,23 @@
       - variety # random backgrounds
       - papirus-icon-theme # icon theme
       - gnome-themes-extra # gtk themes
-      - x2goclient 
+      - x2goclient
       - youtube-dl
       - partitionmanager
       - cura
       - balena-etcher
     state: present
     extra_args: --noconfirm
+
+- name: Configure users for wayland
+  user:
+    name: '{{ item }}'
+    shell: '{{ shell }}'
+    append: yes
+    groups: video # for nwg-shell
+  with_items:
+    - "{{ user }}"
+    - greeter
 
 - name: Create directory for nwg-shell
   become: no
@@ -118,7 +128,7 @@
 
 - name: add missing gpg keys for aur
   become: no
-  shell: gpg --recv --keyserver keyserver.ubuntu.com '{{item}}'
+  shell: gpg --recv --keyserver keyserver.ubuntu.com '{{ item }}'
   loop:
     - F4B432D5D67990E3 # wob
 
@@ -129,6 +139,9 @@
   aur:
     skip_installed: true
     name:
+      - nwg-shell
+      - greetd-git
+      - greetd-tuigreet-git
       - adapta-gtk-theme #https://github.com/Alexays/Waybar/issues/515
       - equilux-theme
       - grimshot-git # grim+slurp wrapper
@@ -153,4 +166,29 @@
     exit 0
   args:
     executable: /usr/bin/expect
-    warn: no
+
+- name: configure tuigreet-greetd
+  copy:
+    src: config.toml
+    dest: /etc/greetd/config.toml
+    mode: '644'
+
+- name: configure XDG_SESSION_TYPE for wayland on sway
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: +x
+  with_items:
+    - sway-run
+    - wayland-enablement.sh
+
+- name: configure XDG_SESSION_TYPE for wayland on sway
+  copy:
+    src: sway-run
+    dest: /usr/local/bin/sway-run
+    mode: +x
+
+- name: Enable greetd service
+  systemd:
+    name: greetd
+    enabled: yes

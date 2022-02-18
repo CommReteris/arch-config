@@ -22,7 +22,7 @@
     skip_installed: true
     name:
       - kompose-bin     # docker-compose to manifest convertor
-      - k3s-bin         # Lightweight Kubernetes in a signle binary 
+      - k3s-bin         # Lightweight Kubernetes in a single binary
       - stern           # tail multiple pods on Kubernetes
       - kubespy         # observe Kubernetes resources in real time
 
@@ -35,11 +35,13 @@
   template:
     src: subuid.j2
     dest: /etc/subuid
+    mode: '644'
 
 - name: copy subgid files for podman rootless
   template:
     src: subgid.j2
     dest: /etc/subgid
+    mode: '644'
 
 - name: disable zfs overlay storage not supported by podman
   lineinfile:
