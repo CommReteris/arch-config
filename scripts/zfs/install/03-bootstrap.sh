@@ -20,7 +20,7 @@ pacstrap /mnt base base-devel linux linux-headers linux-firmware intel-ucode efi
 
 # Generate fstab excluding ZFS entries
 print "Generate fstab excluding ZFS entries"
-genfstab -U -p /mnt | grep -v "zroot" | tr -s '\n' | sed 's/\/mnt//'  > /mnt/etc/fstab
+genfstab -U -p /mnt | grep -v "rpool" | tr -s '\n' | sed 's/\/mnt//'  > /mnt/etc/fstab
  
 # Set hostname
 echo $hostname > /mnt/etc/hostname
@@ -94,28 +94,6 @@ EOSF
   # Generate Initramfs
   mkinitcpio -P
 
-  # Install bootloader
-  bootctl --path=/efi install
-
-  # Generate boot entries
-  mkdir -p /efi/loader/entries
-
-  cat > /efi/loader/loader.conf <<"EOSF"
-default org.zectl-default
-timeout 10
-EOSF
-
-  cat > /efi/loader/entries/org.zectl-default.conf <<"EOSF"
-title           Arch Linux ZFS Default
-linux           /env/org.zectl-default/vmlinuz-linux
-initrd          /env/org.zectl-default/intel-ucode.img
-initrd          /env/org.zectl-default/initramfs-linux.img
-options         zfs=zroot/ROOT/default rw
-EOSF
-
-  # Update bootloader configuration
-  bootctl --path=/efi --graceful update
-
   # Create user
   useradd -m rengo
   useradd -M greeter
@@ -149,7 +127,7 @@ DHCP=ipv4
 IPForward=yes
 
 [DHCP]
-UseDNS=no
+UseDNS=yes
 RouteMetric=10
 EOF
 cat > /mnt/etc/systemd/network/wlX.network <<"EOF"
@@ -174,13 +152,6 @@ EnableNetworkConfiguration=true
 EOF
 systemctl enable iwd --root=/mnt
 
-# Configure DNS
-# print "Configure DNS"
-# rm /mnt/etc/resolv.conf
-# ln -s /run/systemd/resolve/resolv.conf /mnt/etc/resolv.conf
-# sed -i 's/^#DNS=.*/DNS=1.1.1.1/' /mnt/etc/systemd/resolved.conf
-# systemctl enable systemd-resolved --root=/mnt
-
 # Activate zfs
 print "Configure ZFS"
 sudo systemctl enable zfs-import-cache --root=/mnt
@@ -192,8 +163,8 @@ sudo systemctl enable zfs.target --root=/mnt
 print "Configure zfs-mount-generator"
 rm /mnt/etc/zfs/*.cache
 mkdir -p /mnt/etc/zfs/zfs-list.cache
-touch /mnt/etc/zfs/zfs-list.cache/zroot
-zfs list -H -o name,mountpoint,canmount,atime,relatime,devices,exec,readonly,setuid,nbmand | sed 's/\/mnt//' > /mnt/etc/zfs/zfs-list.cache/zroot
+touch /mnt/etc/zfs/zfs-list.cache/rpool
+zfs list -H -o name,mountpoint,canmount,atime,relatime,devices,exec,readonly,setuid,nbmand | sed 's/\/mnt//' > /mnt/etc/zfs/zfs-list.cache/rpool
 ln -sf /usr/lib/zfs/zed.d/history_event-zfs-list-cacher.sh /mnt/etc/zfs/zed.d
 systemctl enable zfs-zed.service --root=/mnt
 systemctl enable zfs.target --root=/mnt
@@ -211,13 +182,13 @@ EOF
 
 # Umount all parts
 print "Umount all parts"
-umount /mnt/boot
-umount /mnt/efi
+umount -l /mnt/boot/efi
 zfs umount -a
+umount -l /mnt
 
-# Export zroot
-print "Export zroot"
-zpool export zroot
+# Export rpool
+print "Export rpool"
+zpool export -f rpool
 
 # Finish
 echo -e "\e[32mAll OK"

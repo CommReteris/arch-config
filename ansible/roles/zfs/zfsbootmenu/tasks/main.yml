@@ -1,24 +1,21 @@
 ---
-
 - name: Get information about latest zfsbootmanager release
-  get_url:
-    url: https://api.github.com/repos/zbm-dev/zfsbootmenu/releases/57983484
-    dest: '~/zbm_latest.tmp'
-    force: yes
-    headers:
-      Accept: "application/vnd.github.v3+json"
-  register: _zbm_latest
+  uri:
+    url: https://api.github.com/repos/zbm-dev/zfsbootmenu/releases/latest
+    body_format: json
+    creates: zbm_latest.json
+    return_content: true
+#    headers:
+#      Accept: "application/vnd.github.v3+json"
+  register: zbm_latest_response
 
-- name: fetch response from remote
-  fetch:
-    src: "~/zbm_latest.tmp"
-    dest: "vars/zbm_latest.tmp"
-    flat: yes
-
-- name: Load response from file
-  include_vars:
-    file: 'vars/zbm_latest.tmp'
-    name: zbm_latest
+- name: debug
+  ansible.builtin.debug:
+    msg: "{{ item }}"
+  with_items:
+    - "{{ zbm_latest_response.json.assets
+        | selectattr('content_type','eq','application/octet-stream')
+        | flatten | map(attribute='name')}}"
 
 - name: Create directory for zfsbootmenu
   file:
@@ -36,7 +33,7 @@
     owner: root
     group: root
     mode: '+x'
-  with_items: "{{ zbm_latest['assets']
+  with_items: "{{ zbm_latest_response.json.assets
     | selectattr('content_type','eq','application/octet-stream')
     | flatten
     | map(attribute='browser_download_url') }}"
