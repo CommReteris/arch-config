@@ -9,10 +9,14 @@ print () {
 echo "Please enter hostname :"
 read hostname
 
+# Root dataset
+root_dataset=$(cat /tmp/root_dataset)
+
 # Sort mirrors
 print "Sort mirrors"
 pacman -Sy reflector --noconfirm
 reflector --country us --country Canada --latest 6 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+systemctl start reflector
 
 # Install
 print "Install Arch Linux"
@@ -49,14 +53,32 @@ HOOKS=(base udev autodetect modconf block keyboard zfs filesystems)
 COMPRESSION="lz4"
 EOF
 
+print "Copy ZFS files"
+cp /etc/hostid /mnt/etc/hostid
+cp /etc/zfs/zpool.cache /mnt/etc/zfs/zpool.cache
+cp /etc/zfs/zroot.key /mnt/etc/zfs
+
+### Configure username
+print 'Set your username'
+read -r -p "Username: " user
+
 # Chroot and configure
 print "Chroot and configure system"
 
-arch-chroot /mnt /bin/bash -xe <<"EOF"
+arch-chroot /mnt /bin/bash -xe <<EOF
 
   # ZFS deps
   pacman-key --recv-keys F75D9D76
+  ### Reinit keyring
+  # As keyring is initialized at boot, and copied to the install dir with pacstrap, and ntp is running
+  # Time changed after keyring initialization, it leads to malfunction
+  # Keyring needs to be reinitialised properly to be able to sign archzfs key.
+  rm -Rf /etc/pacman.d/gnupg
+  pacman-key --init
+  pacman-key --populate archlinux
+  pacman-key --recv-keys F75D9D76
   pacman-key --lsign-key F75D9D76
+  pacman -S archlinux-keyring --noconfirm
   cat >> /etc/pacman.conf <<"EOSF"
 
 [archzfs]
@@ -95,8 +117,8 @@ EOSF
   mkinitcpio -P
 
   # Create user
-  useradd -m rengo
   useradd -M greeter
+  useradd -m $user
 
 EOF
 
@@ -106,13 +128,13 @@ arch-chroot /mnt /bin/passwd
 
 # Set user passwd
 print "Set user password"
-arch-chroot /mnt /bin/passwd rengo
+arch-chroot /mnt /bin/passwd "$user"
 
 # Configure sudo
 print "Configure sudo"
-cat > /mnt/etc/sudoers <<"EOF"
+cat > /mnt/etc/sudoers <<EOF
 root ALL=(ALL) ALL
-rengo ALL=(ALL) NOPASSWD: ALL
+$user ALL=(ALL) NOPASSWD: ALL
 Defaults rootpw
 EOF
 
@@ -154,10 +176,10 @@ systemctl enable iwd --root=/mnt
 
 # Activate zfs
 print "Configure ZFS"
-sudo systemctl enable zfs-import-cache --root=/mnt
-sudo systemctl enable zfs-mount --root=/mnt
-sudo systemctl enable zfs-import.target --root=/mnt
-sudo systemctl enable zfs.target --root=/mnt
+systemctl enable zfs-import-cache --root=/mnt
+systemctl enable zfs-mount --root=/mnt
+systemctl enable zfs-import.target --root=/mnt
+systemctl enable zfs.target --root=/mnt
 
 # Configure zfs-mount-generator
 print "Configure zfs-mount-generator"
@@ -168,7 +190,7 @@ zfs list -H -o name,mountpoint,canmount,atime,relatime,devices,exec,readonly,set
 ln -sf /usr/lib/zfs/zed.d/history_event-zfs-list-cacher.sh /mnt/etc/zfs/zed.d
 systemctl enable zfs-zed.service --root=/mnt
 systemctl enable zfs.target --root=/mnt
-
+zfs set org.zfsbootmenu:commandline="rw verbose nowatchdog" rpool/ROOT/"$root_dataset"
 # Generate hostid
 print "Generate hostid"
 arch-chroot /mnt zgenhostid $(hostid)

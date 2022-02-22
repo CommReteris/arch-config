@@ -3,7 +3,7 @@
   become: true
 
   vars:
-    user: rengo
+    user: user
     shell: /usr/bin/fish
     cmdline: ""
 
@@ -26,7 +26,8 @@
 #    - { role: zfs/systemd_boot_zectl, tags: boot, become: true }
     - { role: zfs/zfsbootmenu, tags: boot, become: true }
     - { role: zfs/initramfs, tags: boot, become: true }
-    - { role: zfs/systemd_scrub_trim, tags: zfs, become: true }
+    - { role: zfs/systemd-scrub, tags: zfs, become: true }
+    - { role: zfs/snapshots, tags: zfs }
 #    - { role: recovery, tags: recovery, become: true }
     - { role: base, tags: base, become: true }
 #    - { role: desktop, tags: desktop, become: true }

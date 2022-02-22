@@ -4,10 +4,10 @@
     path: /etc/pacman.conf
     regexp: "#{{ item }}"
     line: "{{ item }}"
-    with_items:
-      - Color
-      - UseSysLog
-      - CheckSpace
+  with_items:
+    - Color
+    - UseSysLog
+    - CheckSpace
 
 - name: configure pacman 2
   lineinfile:
@@ -48,9 +48,3 @@
   systemd:
     name: linux-modules-cleanup
     enabled: yes
-
-- name: Install archaudit hook
-  copy:
-    src: arch-audit.hook
-    dest: /usr/share/libalpm/hooks
-    mode: "+x"

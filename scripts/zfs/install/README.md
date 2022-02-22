@@ -1,17 +1,31 @@
+### How to Use
+
+Boot latest archiso
+
+```bash
+$ loadkeys fr
+
+# Init ZFS module and install git
+$ curl -s https://eoli3n.github.io/archzfs/init | bash
+
+# Get install scripts
+$ git clone https://github.com/eoli3n/arch-config
+$ cd arch-config/scripts/zfs/install
+$ ./01-configure.sh
+$ ./02-install.sh
+```
+
+### DualBoot Support
+
+After installing Void Linux with [void-config](https://github.com/eoli3n/void-config/tree/master/scripts/install), run ``01-configure.sh`` and select ``dualboot`` in the menu.
+
 ### EFI install
 
-- sda1
-  /boot
+- sda1  
+  /efi  
   FAT used as esp
-- sda2
+- sda2  
   ZFS pool
-
-
-##### Boot latest arch iso
-
-``00-init.sh`` will 
-- curl init script from https://eoli3n.github.io
-- source: https://github.com/eoli3n/archiso-zfs
 
 ``01-configure.sh`` will 
 - Create partition scheme
