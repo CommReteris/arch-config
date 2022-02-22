@@ -118,7 +118,7 @@ EOSF
 
   # Create user
   useradd -M greeter
-  useradd -m $user
+  useradd $user
 
 EOF
 
@@ -196,7 +196,7 @@ print "Generate hostid"
 arch-chroot /mnt zgenhostid $(hostid)
 
 arch-chroot /mnt /bin/bash -xe <<"EOF"
-  su -l rengo
+  su -l $user
   git clone --recursive https://github.com/CommReteris/arch-config
   cd arch-config/ansible
   ansible-playbook install-zfs.yml -vvK

@@ -77,8 +77,8 @@ zfs_passphrase () {
     print "Set ZFS passphrase"
     read -r -p "> ZFS passphrase: " -s pass
     echo
-    echo "$pass" > /etc/zfs/zroot.key
-    chmod 000 /etc/zfs/zroot.key
+    echo "$pass" > /etc/zfs/rpool.key
+    chmod 000 /etc/zfs/rpool.key
 }
 
 create_pool () {
@@ -96,27 +96,27 @@ create_pool () {
                  -O dnodesize=legacy                      \
                  -O encryption=aes-256-gcm                \
                  -O keyformat=passphrase                  \
-                 -O keylocation=file:///etc/zfs/zroot.key \
+                 -O keylocation=file:///etc/zfs/rpool.key \
                  -O normalization=formD                   \
                  -O mountpoint=none                       \
                  -O canmount=off                          \
                  -O devices=off                           \
                  -R /mnt                                  \
-                 zroot "$ZFS"
+                 rpool "$ZFS"
 }
 
 create_root_dataset () {
     # Slash dataset
     print "Create root dataset"
-    zfs create -o mountpoint=none                 zroot/ROOT
+    zfs create -o mountpoint=none                 rpool/ROOT
 
     # Set cmdline
-    zfs set org.zfsbootmenu:commandline="ro quiet" zroot/ROOT
+    zfs set org.zfsbootmenu:commandline="ro quiet" rpool/ROOT
 }
 
 create_system_dataset () {
     print "Create slash dataset"
-    zfs create -o mountpoint=/ -o canmount=noauto zroot/ROOT/"$1"
+    zfs create -o mountpoint=/ -o canmount=noauto rpool/ROOT/"$1"
 
     # Generate zfs hostid
     print "Generate hostid"
@@ -124,32 +124,32 @@ create_system_dataset () {
     
     # Set bootfs 
     print "Set ZFS bootfs"
-    zpool set bootfs="zroot/ROOT/$1" zroot
+    zpool set bootfs="rpool/ROOT/$1" rpool
 
     # Manually mount slash dataset
-    zfs mount zroot/ROOT/"$1"
+    zfs mount rpool/ROOT/"$1"
 }
 
 create_home_dataset () {
     print "Create home dataset"
-    zfs create -o mountpoint=/ -o canmount=off zroot/data
-    zfs create                                 zroot/data/home
+    zfs create -o mountpoint=/ -o canmount=off rpool/data
+    zfs create                                 rpool/data/home
 }
 
 export_pool () {
     print "Export zpool"
-    zpool export zroot
+    zpool export rpool
 }
 
 import_pool () {
     print "Import zpool"
-    zpool import -d /dev/disk/by-id -R /mnt zroot -N -f
-    zfs load-key zroot
+    zpool import -d /dev/disk/by-id -R /mnt rpool -N -f
+    zfs load-key rpool
 }
 
 mount_system () {
     print "Mount slash dataset"
-    zfs mount zroot/ROOT/"$1"
+    zfs mount rpool/ROOT/"$1"
     zfs mount -a
     
     # Mount EFI part
@@ -163,7 +163,7 @@ copy_zpool_cache () {
     # Copy ZFS cache
     print "Generate and copy zfs cache"
     mkdir -p /mnt/etc/zfs
-    zpool set cachefile=/etc/zfs/zpool.cache zroot
+    zpool set cachefile=/etc/zfs/zpool.cache rpool
 }
 
 # Main

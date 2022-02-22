@@ -1,0 +1,90 @@
+---
+_packages:
+  repo:
+    desktop:
+      - sway
+      - swaybg
+      - swaylock # locker for wayland
+      - swayidle
+      - wdisplays # arandr for wayland
+      - xorg-server-xwayland
+      - waybar
+      - mako # notification daemon
+      - kanshi # autorandr for wayland
+      - grim # screenshots
+      - slurp # region selector
+      - wl-clipboard # clipboard manager
+      - brightnessctl # brightness manager
+      - wofi # rofi for wayland
+      - xdg-user-dirs
+    video:
+      - mesa
+      - mesa-demos
+      - lib32-virtualgl
+      - vulkan-intel
+      - lib32-vulkan-intel
+      - intel-media-driver
+      - libva-utils
+    audio:
+      - pipewire
+      - pipewire-pulse
+      - wireplumber
+      - pavucontrol
+      - pamixer
+      - alsa-utils
+    apps:
+      - imv # img visualizer
+      - kitty # terminal emulator
+      - evince # pdf viewer
+      - okular
+      - evolution # mail client
+      - gnome-keyring # evolution gnome keyring
+      - seahorse # keyring manager
+      - kleopatra
+      - firefox-esr-bin
+      - flatpak # package manager
+      - gimp # img editor
+      - exaile
+      - kolourpaint # img editor
+      - shotwell # photo manager
+      - digikam
+      - libreoffice-still # libreoffice suite
+      - lxappearance # theme manager
+      - mpv # video player
+      - kdenlive
+      - thunar # file manager
+      - tumbler # thumbnailer
+      - openvpn
+      - playerctl # music player cli controller
+      - steam # games manager
+      - transmission-gtk # torrent downloader
+      - texlive-bin # latex
+      - texlive-core # latex
+      - texlive-latexextra # latex
+      - texlive-fontsextra # latex
+      - variety # random backgrounds
+      - papirus-icon-theme # icon theme
+      - gnome-themes-extra # gtk themes
+      - x2goclient
+      - youtube-dl
+      - partitionmanager
+      - cura
+      - balena-etcher
+    network:
+    extra:
+  aur:
+    - nwg-shell
+    - greetd-git
+    - greetd-tuigreet-git
+    - adapta-gtk-theme #https://github.com/Alexays/Waybar/issues/515
+    - equilux-theme
+    - grimshot-git # grim+slurp wrapper
+    - nwg-shell
+    - wob # bars for wayland
+    - connman-gtk # connman gtk gui
+    - downgrade # package downgrader
+    - lf # cli file manager
+    - otf-font-awesome
+    - pastel # color viewer
+    - starleaf-breeze
+    - swappy # screenshot editor

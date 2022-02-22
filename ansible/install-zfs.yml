@@ -3,7 +3,7 @@
   become: true
 
   vars:
-    user: user
+    user: arch-rengo
     shell: /usr/bin/fish
     cmdline: ""
 
@@ -23,14 +23,13 @@
   roles:
     - { role: pacman, tags: pacman, become: true }
     - { role: aur, tags: aur, become: true }
-#    - { role: zfs/systemd_boot_zectl, tags: boot, become: true }
-    - { role: zfs/zfsbootmenu, tags: boot, become: true }
+#    - { role: zfs/zfsbootmenu, tags: boot, become: true }
     - { role: zfs/initramfs, tags: boot, become: true }
     - { role: zfs/systemd-scrub, tags: zfs, become: true }
     - { role: zfs/snapshots, tags: zfs }
 #    - { role: recovery, tags: recovery, become: true }
     - { role: base, tags: base, become: true }
-#    - { role: desktop, tags: desktop, become: true }
+    - { role: desktop, tags: desktop, become: true }
 #    - { role: flatpak, tags: flatpak, become: true }
 #    - { role: cronie, tags: cronie, become: true }
 #    - { role: virtualization, tags: virtualization, become: true }
