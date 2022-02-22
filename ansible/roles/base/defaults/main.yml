@@ -72,6 +72,7 @@ _base_packages:
     shell:
       - glow # render markdown cli
     system:
+      - zrepl # zfs snapshot manager
     fonts:
       - ttf-impallari-cabin-font # cv font
     extra:
