@@ -56,7 +56,7 @@ EOF
 print "Copy ZFS files"
 cp /etc/hostid /mnt/etc/hostid
 cp /etc/zfs/zpool.cache /mnt/etc/zfs/zpool.cache
-cp /etc/zfs/zroot.key /mnt/etc/zfs
+cp /etc/zfs/rpool.key /mnt/etc/zfs
 
 ### Configure username
 print 'Set your username'

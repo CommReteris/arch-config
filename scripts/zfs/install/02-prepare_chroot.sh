@@ -11,11 +11,10 @@ zfs load-key -a
 
 # Slash dataset
 print "Create slash dataset"
-zfs create -o mountpoint=none                           rpool/ARCH/ROOT
-zfs create -o mountpoint=/ -o canmount=noauto           rpool/ARCH/ROOT/arch
+zfs create -o mountpoint=/ -o canmount=noauto           rpool/ROOT/arch
 
 # Manually mount slash dataset
-zfs mount rpool/ARCH/ROOT/arch
+zfs mount rpool/ROOT/arch
 zfs mount -a
 
 # Mount EFI part

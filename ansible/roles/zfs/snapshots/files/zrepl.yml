@@ -2,7 +2,7 @@ jobs:
 - name: system
   type: snap
   filesystems: {
-    "zroot/ROOT<": true
+    "rpool/ROOT<": true
   }
   snapshotting:
     type: periodic
@@ -17,7 +17,7 @@ jobs:
 - name: home
   type: snap
   filesystems: {
-    "zroot/data/home<": true
+    "rpool/home<": true
   }
   snapshotting:
     type: periodic
