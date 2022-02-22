@@ -74,8 +74,8 @@ zpool create -f -o ashift=12           \
 # Home dataset
 print "Create home dataset"
 
-zfs create -o mountpoint=none              rpool/ROOT
-zfs create                                 rpool/home
-zfs create -o mountpoint=/root             rpool/home/root
+
+zfs create                                 rpool/ARCH/home
+
 
 zpool export -af

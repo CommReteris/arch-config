@@ -6,26 +6,22 @@ zfs load-key -a -L 'prompt'
 
 # Slash dataset
 print "Create slash dataset"
-zfs create -o mountpoint=/ -o canmount=noauto rpool/ROOT/arch
+zfs create -o mountpoint=none                           rpool/ARCH/ROOT
+zfs create -o mountpoint=/ -o canmount=noauto           rpool/ARCH/ROOT/arch
+zfs create -o mountpoint=/home -o canmunt=noauto        rpool/ARCH/home
+zfs create -o mountpoint=/root -o canmount=noauto       rpool/ARCH/home/root
+zfs create -o mountpoint=/home/rengo -o canmount=noauto rpool/ARCH/home/rengo
 
 # Manually mount slash dataset
-zfs mount rpool/ROOT/arch
-
-# Specific datasets
-print "Create specific datasets excluded from snapshots"
-zfs create -o mountpoint=/var -o canmount=off     rpool/var
-zfs create                                        rpool/var/log
-zfs create -o mountpoint=/var/lib -o canmount=off rpool/var/lib
-zfs create                                        rpool/var/lib/libvirt
-zfs create                                        rpool/var/lib/docker
-
-zfs mount rpool/ROOT/arch
-zfs mount -a
+zfs mount rpool/ARCH/ROOT/arch
+zfs mount rpool/ARCH/home
+zfs mount rpool/ARCH/home/root
+zfs mount rpool/ARCH/home/rengo
 
 # Mount EFI part
 print "Mount EFI part"
 mkdir -p /mnt/boot/efi
-mount /de/sda1 /mnt/boot/efi
+mount /dev/sda1 /mnt/boot/efi
 
 # Copy ZFS cache
 print "Generate and copy zfs cache"
